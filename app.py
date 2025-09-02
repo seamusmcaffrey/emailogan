@@ -8,11 +8,7 @@ import tempfile
 import io
 import logging
 import sys
-from dotenv import load_dotenv
 import hashlib
-
-# Load environment variables
-load_dotenv()
 
 # Setup logging
 logging.basicConfig(
@@ -35,7 +31,7 @@ def check_password():
     
     def password_entered():
         """Checks whether a password entered by the user is correct."""
-        if hashlib.sha256(st.session_state["password"].encode()).hexdigest() == hashlib.sha256(os.getenv('APP_PASSWORD', 'blocklogan1988').encode()).hexdigest():
+        if hashlib.sha256(st.session_state["password"].encode()).hexdigest() == hashlib.sha256(st.secrets.get('APP_PASSWORD', 'blocklogan1988').encode()).hexdigest():
             st.session_state["password_correct"] = True
             del st.session_state["password"]  # Don't store password in session
         else:
