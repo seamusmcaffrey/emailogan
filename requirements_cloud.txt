@@ -1,0 +1,23 @@
+# Streamlit Cloud compatible requirements (without eml-parser for now)
+streamlit==1.32.0
+pandas==2.2.0
+numpy>=1.24.0
+python-dateutil==2.8.2
+
+# OpenAI and LlamaIndex
+openai==1.12.0
+llama-index==0.10.0
+llama-index-core==0.10.0
+llama-index-vector-stores-pinecone==0.1.0
+llama-index-embeddings-openai==0.1.0
+llama-index-llms-openai==0.1.0
+
+# Pinecone vector database
+pinecone-client>=3.0.0
+
+# Email parsing alternative (without cchardet dependency)
+email-validator>=2.0.0
+python-magic>=0.4.27
+
+# Diagnostics
+psutil>=5.9.0

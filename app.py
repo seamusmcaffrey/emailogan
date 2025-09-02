@@ -68,7 +68,7 @@ def check_password():
         return True
 
 def upload_and_process_page():
-    from email_processor import EmailProcessor, create_vector_database
+    from email_processor_simple import EmailProcessor, create_vector_database
     
     st.header("📤 Upload Email Files")
     
