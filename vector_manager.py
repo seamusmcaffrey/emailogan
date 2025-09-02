@@ -11,10 +11,17 @@ logger = logging.getLogger(__name__)
 
 class VectorManager:
     def __init__(self):
-        self.api_key = st.secrets.get("PINECONE_API_KEY", "")
+        try:
+            self.api_key = st.secrets.get("PINECONE_API_KEY", "")
+        except:
+            self.api_key = ""
         self.index_name = "email-rag-index"
+        try:
+            openai_key = st.secrets.get("OPENAI_API_KEY", "")
+        except:
+            openai_key = ""
         self.embedding_model = OpenAIEmbedding(
-            api_key=st.secrets.get("OPENAI_API_KEY", "")
+            api_key=openai_key
         )
     
     def initialize_pinecone(self):
@@ -100,7 +107,11 @@ class VectorManager:
                 st.info("You can still use Direct Context mode without Pinecone")
                 return None
             
-            if not st.secrets.get("OPENAI_API_KEY", ""):
+            try:
+                openai_key = st.secrets.get("OPENAI_API_KEY", "")
+            except:
+                openai_key = ""
+            if not openai_key:
                 logger.error("OPENAI_API_KEY not found in secrets")
                 st.error("⚠️ OPENAI_API_KEY not found in .streamlit/secrets.toml")
                 return None

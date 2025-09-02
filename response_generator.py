@@ -10,7 +10,10 @@ logger = logging.getLogger(__name__)
 class ResponseGenerator:
     def __init__(self):
         logger.info("Initializing ResponseGenerator")
-        api_key = st.secrets.get("OPENAI_API_KEY", "")
+        try:
+            api_key = st.secrets.get("OPENAI_API_KEY", "")
+        except:
+            api_key = ""
         if not api_key:
             logger.error("OPENAI_API_KEY not found in secrets")
             raise ValueError("OPENAI_API_KEY not found in secrets. Please add it to .streamlit/secrets.toml")

@@ -31,7 +31,12 @@ def check_password():
     
     def password_entered():
         """Checks whether a password entered by the user is correct."""
-        if hashlib.sha256(st.session_state["password"].encode()).hexdigest() == hashlib.sha256(st.secrets.get('APP_PASSWORD', 'blocklogan1988').encode()).hexdigest():
+        try:
+            app_password = st.secrets.get('APP_PASSWORD', 'blocklogan1988')
+        except:
+            app_password = 'blocklogan1988'
+        
+        if hashlib.sha256(st.session_state["password"].encode()).hexdigest() == hashlib.sha256(app_password.encode()).hexdigest():
             st.session_state["password_correct"] = True
             del st.session_state["password"]  # Don't store password in session
         else:
