@@ -5,8 +5,9 @@ numpy>=1.24.0
 python-dateutil==2.8.2
 
 # Email processing
-eml-parser==1.17.0
-chardet>=5.0.0  # Fallback for cchardet
+# Temporarily removing eml-parser due to cchardet build issues
+# eml-parser==1.17.0
+chardet>=5.0.0  # For character encoding detection
 
 # OpenAI and LlamaIndex
 openai==1.12.0
