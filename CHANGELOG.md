@@ -1,5 +1,50 @@
 # Email RAG Assistant - Changelog
 
+## Version 2.3.0 - September 2, 2025 (Evening) - DEPLOYMENT FIXES
+
+### 🚨 Critical Streamlit Cloud Deployment Issues Resolved
+
+#### Problem Summary
+- **Initial Issue**: Streamlit Cloud deployment failing with dependency build errors
+- **Root Cause**: `eml-parser` package requires `cchardet` which fails to compile on Streamlit Cloud (Python 3.11-3.13)
+- **Error**: `fatal error: longintrepr.h: No such file or directory` during cchardet compilation
+
+#### Solution Implemented
+- Replaced `eml-parser` with Python's built-in `email` module
+- Created new `email_processor_simple.py` using standard library
+- Removed all dependencies requiring C compilation
+
+#### Files Created
+- `diagnostic_app.py` - Comprehensive deployment diagnostics
+- `diagnostic_app_minimal.py` - Minimal diagnostics  
+- `test_minimal.py` - Absolute minimal Streamlit test
+- `email_processor_simple.py` - Built-in email parser replacement
+- `utils/secrets_manager.py` - Centralized secrets handling
+- `DEPLOYMENT_GUIDE.md` - Complete deployment documentation
+- `requirements_minimal.txt` - Minimal requirements for testing
+
+#### Files Modified
+- `requirements.txt` - Removed eml-parser, added chardet
+- `app.py` - Now uses email_processor_simple
+- `deployment_check.py` - Enhanced with more checks
+
+#### Files Deleted  
+- `packages.txt` - Caused apt-get errors
+- `.python-version` - Constraints not respected
+
+#### Key Learnings
+1. Avoid packages requiring compilation on Streamlit Cloud
+2. Start with minimal test app first
+3. Use Python built-in modules when possible
+4. No comments in packages.txt
+5. Python version constraints may not work
+
+#### Current Status
+- ✅ Dependencies install successfully
+- ✅ No compilation required
+- ✅ Using Python standard library
+- ⏳ Testing minimal app deployment
+
 ## Version 2.2.0 - September 2, 2025 (Evening)
 
 ### 🎯 Major Enhancements for Large-Scale Email Processing
