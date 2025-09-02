@@ -16,10 +16,7 @@ backgroundColor = "#1E1E2E"
 secondaryBackgroundColor = "#2A2A3E"
 textColor = "#FFFFFF"
 
-[runner]
-magicEnabled = true
-installTracer = false
-fixMatplotlib = true
+# Runner section removed - these options are deprecated
 
 [client]
 showErrorDetails = true

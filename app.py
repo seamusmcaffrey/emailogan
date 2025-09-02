@@ -8,14 +8,18 @@ import tempfile
 import io
 import logging
 import sys
+from dotenv import load_dotenv
+import hashlib
+
+# Load environment variables
+load_dotenv()
 
 # Setup logging
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler('emailogan.log')
+        logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger(__name__)
@@ -25,6 +29,42 @@ st.set_page_config(
     page_icon="✉️",
     layout="wide"
 )
+
+def check_password():
+    """Returns `True` if the user has entered the correct password."""
+    
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if hashlib.sha256(st.session_state["password"].encode()).hexdigest() == hashlib.sha256(os.getenv('APP_PASSWORD', 'blocklogan1988').encode()).hexdigest():
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Don't store password in session
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        # First run, show input box
+        st.markdown("## 🔐 Authentication Required")
+        st.text_input(
+            "Please enter password to access the application:",
+            type="password",
+            on_change=password_entered,
+            key="password"
+        )
+        return False
+    elif not st.session_state["password_correct"]:
+        # Password incorrect, show input box again
+        st.markdown("## 🔐 Authentication Required")
+        st.text_input(
+            "Please enter password to access the application:",
+            type="password",
+            on_change=password_entered,
+            key="password"
+        )
+        st.error("😕 Password incorrect")
+        return False
+    else:
+        # Password correct
+        return True
 
 def upload_and_process_page():
     from email_processor import EmailProcessor, create_vector_database
@@ -333,19 +373,19 @@ def knowledge_base_page():
             st.rerun()
 
 def main():
+    # Check password before showing main app
+    if not check_password():
+        st.stop()
+    
     st.title("✉️ Personal Email RAG Assistant")
     st.markdown("Upload your .eml files to create a personalized email response system")
     
     # Add logging status in sidebar
     with st.sidebar:
         with st.expander("📊 System Status"):
-            st.write("Logging to: emailogan.log")
-            if st.button("Clear Log", key="clear_log_btn"):
-                try:
-                    open('emailogan.log', 'w').close()
-                    st.success("Log cleared")
-                except Exception as e:
-                    st.error(f"Could not clear log: {e}")
+            st.write("Logging to: console")
+            if st.button("View Recent Logs", key="view_logs_btn"):
+                st.info("Logs are available in the Streamlit Cloud dashboard")
     
     with st.sidebar:
         st.header("Navigation")
