@@ -1,0 +1,19 @@
+From: spock@enterprise.starfleet
+To: chekov@enterprise.starfleet
+Subject: Navigation Calculation Error - Correction Required
+Date: Sat, 20 Jan 2024 10:30:00 +0000
+Message-ID: <006@enterprise.starfleet>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Ensign Chekov,
+
+During my review of yesterday's navigation logs, I detected a minor computational error in your course plotting for the Aldebaran system. You failed to account for the 0.0003% gravitational variance caused by the binary star configuration.
+
+While this error would only result in a 1,247 kilometer deviation from intended coordinates - negligible in stellar terms - precision is paramount in stellar navigation.
+
+I have corrected the calculations. Please review the attached algorithms to prevent future occurrences. Your assertion that "Russian navigation methods" would have avoided this error is illogical, as mathematics is universal regardless of terrestrial origin.
+
+Your overall performance remains satisfactory. This correction is meant as instruction, not criticism.
+
+Commander Spock

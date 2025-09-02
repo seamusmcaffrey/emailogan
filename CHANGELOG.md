@@ -1,0 +1,249 @@
+# Email RAG Assistant - Changelog
+
+## Version 2.2.0 - September 2, 2025 (Evening)
+
+### 🎯 Major Enhancements for Large-Scale Email Processing
+
+#### Automatic User Email Detection
+- **New Feature**: System automatically detects the user's email address from uploaded corpus
+  - Analyzes frequency of senders to identify the most common (likely the user)
+  - Requires >30% confidence threshold for auto-detection
+  - Displays detected email prominently in the UI
+  - Handles various email formats (Name <email@domain.com> or plain email)
+
+#### Internal/External Email Classification
+- **New Checkbox**: Mark emails as internal (same organization) vs external
+  - Automatic domain validation compares sender and user domains
+  - Different prompt strategies for internal vs external emails
+  - Internal emails allow more casual tone
+  - External emails maintain professional boundaries
+
+#### Message Type Categorization
+- **New Dropdown**: Classify message types for context-aware responses
+  - General (default)
+  - External Client (extra professionalism)
+  - Internal Colleague (more casual if appropriate)
+  - Discussion (references ongoing context)
+  - Request (ensures clear addressing)
+  - Update (acknowledges status appropriately)
+
+#### Enhanced RAG Performance for Larger Corpus
+- **Increased Retrieval Limits**:
+  - RAG Mode: 10 → 15 emails for richer context
+  - Direct Mode: 5 → 10 emails for better fallback
+- **Improved Prompts**: Emphasizes studying 15+ examples for better style learning
+- **Context-Aware Generation**: Prompts adapt based on internal/external and message type
+
+#### Technical Improvements
+- Added `detect_user_email()` method to `EmailProcessor` class
+- Extended all response generation methods with new parameters:
+  - `message_type`: String indicating email category
+  - `is_internal`: Boolean for internal/external classification
+  - `user_email`: Optional detected user email
+- Domain comparison logic for automatic internal/external validation
+- Enhanced prompt building with contextual information display
+
+#### UI/UX Enhancements
+- User email displayed at top of response generation page
+- Better form organization with grouped controls
+- Helpful tooltips explaining each new feature
+- Clear visual indicators for email context type
+
+### 🐛 Bug Fixes
+- Fixed method signature mismatch causing "unexpected keyword argument" errors
+- Corrected parameter passing between UI and backend methods
+- Updated all response generation methods for consistency
+
+## Version 2.1.0 - September 2, 2025 (1:10 PM)
+
+### 🎯 Major Improvements
+
+#### Temperature & Style Consistency
+- **Reduced LLM temperature from 0.9 to 0.3**
+  - Significantly improves adherence to RAG-retrieved style
+  - Less randomness in responses
+  - More consistent style mimicking from embeddings
+  - Better reproduction of distinctive writing patterns
+
+#### Checkbox Functionality Restored
+- **"Include Context from Past Emails" now properly toggles between modes**
+  - ✅ **Checked (RAG Mode)**: Uses embeddings to mimic email style from database
+  - ❌ **Unchecked (Baseline Mode)**: Generates standard professional response
+  - Previously, both modes were incorrectly using RAG
+  - Now provides clear A/B testing capability
+
+#### Enhanced Logging & Debugging
+- Added explicit checkbox state logging: `Include Context checkbox state: True/False`
+- Clear mode differentiation in logs:
+  - `=== USING RAG SYSTEM WITH EMBEDDINGS ===`
+  - `=== USING BASELINE (NO EMBEDDINGS) ===`
+- Response mode included in success messages
+- Better traceability for debugging style issues
+
+#### UI/UX Improvements
+- Added helpful tooltip to checkbox explaining the difference between modes
+- Dynamic spinner messages based on selected mode
+- Success message displays which mode was used
+- Clearer user feedback throughout the process
+
+---
+
+## Version 2.0.0 - September 2, 2025 (Morning Session)
+
+### 🎯 Core Features Implemented
+
+#### 1. **ZIP File Support**
+- ✅ Added support for uploading ZIP files containing .eml files
+- ✅ Automatically extracts and processes only .eml files from ZIP archives
+- ✅ Filters out system files (e.g., `__MACOSX/`)
+- ✅ Maintains same processing pipeline as individual file uploads
+
+#### 2. **Automatic Vector Database Creation**
+- ✅ Vector database now creates automatically after processing emails
+- ✅ Removed need for separate "Create Vector Database" button
+- ✅ Better error handling with API key validation
+- ✅ Seamless workflow from upload to generation
+
+#### 3. **Enhanced Email Body Extraction**
+- ✅ Fixed critical issue where email bodies were not being extracted
+- ✅ Added fallback parsing for simple plain-text emails
+- ✅ Shows statistics on successful body extraction
+- ✅ Displays sample email content for verification
+
+#### 4. **Improved RAG System**
+- ✅ Increased context retrieval from 5 to 10 documents
+- ✅ Stores full email bodies in vectors (not truncated)
+- ✅ Enhanced document structure with style markers
+- ✅ Better metadata for retrieval
+
+#### 5. **Simplified Architecture**
+- ✅ Removed unnecessary "Direct Context" mode
+- ✅ Removed "Baseline" mode initially (re-added in v2.1.0)
+- ✅ System focused purely on RAG-based generation
+- ✅ Cleaner, more intuitive interface
+
+#### 6. **Port Configuration**
+- ✅ Configured Streamlit to run on port 3000
+- ✅ Created `.streamlit/config.toml` with proper settings
+- ✅ Added theme configuration
+
+### 📊 Technical Enhancements
+
+#### Logging & Debugging
+- Comprehensive logging throughout the application
+- Logs to both console and `emailogan.log` file
+- Debug panel shows:
+  - Vector database status
+  - Number of processed emails
+  - Emails with body content
+  - Session state information
+
+#### Email Processing
+- Enhanced `EmailProcessor.extract_email_info()`:
+  - Tries multiple methods to extract body content
+  - Handles various email formats
+  - Provides clear warnings when extraction fails
+
+#### Vector Management
+- Improved `VectorManager.process_emails_to_documents()`:
+  - Includes full email body for better style learning
+  - Adds style markers to documents
+  - Enhanced metadata with body preview and length
+
+#### Response Generation
+- Enhanced `ResponseGenerator`:
+  - Stronger style-mimicking prompts
+  - Configurable temperature for creativity control
+  - Retrieves more context (10 documents vs 5)
+  - Generic prompts that work with any writing style
+
+### 🐛 Bug Fixes
+
+1. **Fixed email body extraction** - Bodies were returning empty due to incorrect parsing
+2. **Fixed vector database creation** - Was not triggering properly after file processing
+3. **Fixed mode selection logic** - System was not respecting checkbox state
+4. **Fixed ZIP file upload** - Corrected file type restrictions
+
+### 📝 Usage Flow
+
+#### Current Workflow (v2.1.0)
+1. Upload .eml files or ZIP containing .eml files
+2. Click "Process Files" (vector DB creates automatically)
+3. Navigate to response page
+4. Choose to include context (RAG) or not (baseline)
+5. Generate response and compare results
+
+### 🎨 UI Components
+
+- File upload with radio buttons for file type selection
+- Progress bars and status indicators
+- Debug information panel
+- Sample email preview
+- Body extraction statistics
+- Retrieved context preview
+- Mode selection checkbox with tooltip
+- Dynamic feedback messages
+
+### 📚 Key Learnings
+
+1. **Email Body Extraction**: The eml_parser library wasn't reliably extracting body content, requiring fallback methods
+2. **Mode Differentiation**: Clear separation between RAG and baseline modes is essential for validating embedding effectiveness
+3. **Temperature Settings**: Lower temperature (0.3) provides better style adherence than higher values (0.9)
+4. **User Feedback**: Visual indicators of which mode is active helps users understand system behavior
+
+### 🚀 Recommended Next Steps
+
+1. **Add style strength slider** - Control how closely to mimic retrieved style (0-100%)
+2. **Implement email deduplication** - Based on message-id to avoid duplicate training data
+3. **Create style profiles** - Save and reuse specific writing styles
+4. **Add more email formats** - Support for MSG, MBOX formats
+5. **Batch processing** - Process multiple emails in parallel for better performance
+6. **Style metrics** - Quantify how well the generated response matches the target style
+
+---
+
+## Dependencies
+
+### Core Libraries
+- `streamlit` - Web interface
+- `eml-parser` - Email parsing
+- `python-dateutil` - Date handling
+
+### Vector/Embedding Libraries
+- `pinecone-client>=3.0.0` - Vector database
+- `llama-index` - RAG framework
+- `llama-index-vector-stores-pinecone` - Pinecone integration
+- `llama-index-embeddings-openai` - OpenAI embeddings
+- `llama-index-llms-openai` - OpenAI LLM integration
+- `openai` - OpenAI API client
+
+### Data Processing
+- `pandas` - Data manipulation
+
+## Configuration
+
+### Required API Keys
+In `.streamlit/secrets.toml`:
+```toml
+OPENAI_API_KEY = "your-key-here"  # Required for embeddings and generation
+PINECONE_API_KEY = "your-key-here"  # Required for vector storage
+```
+
+### Server Configuration
+In `.streamlit/config.toml`:
+```toml
+[server]
+port = 3000
+headless = true
+```
+
+## Performance Notes
+
+- **Processing Time**: ~1-2 seconds per email for embedding creation
+- **Response Generation**: ~3-5 seconds with RAG, ~2-3 seconds for baseline
+- **Memory Usage**: Scales with number of emails (approximately 1MB per 100 emails)
+- **Optimal Dataset Size**: 20-100 emails for best style learning
+
+---
+
+*Email RAG Assistant v2.1.0 - Style-aware email response generation using RAG*

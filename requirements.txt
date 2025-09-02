@@ -1,0 +1,10 @@
+streamlit
+eml-parser
+pinecone-client>=3.0.0
+llama-index
+llama-index-vector-stores-pinecone
+llama-index-embeddings-openai
+llama-index-llms-openai
+openai
+pandas
+python-dateutil

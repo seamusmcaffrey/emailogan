@@ -1,0 +1,25 @@
+[server]
+port = 3000
+headless = true
+enableCORS = false
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+serverAddress = "localhost"
+serverPort = 3000
+
+[theme]
+# Optional: You can also configure the theme here
+primaryColor = "#FF6B6B"
+backgroundColor = "#1E1E2E"
+secondaryBackgroundColor = "#2A2A3E"
+textColor = "#FFFFFF"
+
+[runner]
+magicEnabled = true
+installTracer = false
+fixMatplotlib = true
+
+[client]
+showErrorDetails = true
