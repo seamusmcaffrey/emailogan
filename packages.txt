@@ -1,0 +1,5 @@
+# System packages for Streamlit Cloud
+# These help with eml-parser compatibility
+python3-dev
+gcc
+g++
