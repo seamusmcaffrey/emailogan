@@ -46,7 +46,7 @@ export default function InstructionsPage() {
               <p className="text-gray-700 leading-relaxed">
                 Look, we need your actual emails to learn how you write. Not screenshots, not copy-paste, 
                 but the real deal. Export your emails as <code className="bg-gray-100 px-2 py-1 rounded text-sm">.eml</code> files. 
-                Don't know how? Google it. We're not your IT department.
+                Don&apos;t know how? Google it. We&apos;re not your IT department.
               </p>
               <div className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-lg">
                 <p className="text-sm text-amber-800">
@@ -66,13 +66,13 @@ export default function InstructionsPage() {
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 Navigate your ass over to the <span className="font-semibold">Upload</span> tab. 
-                Drag and drop your .eml files like you're 2024's hottest DJ. Or click the button 
-                like it's 2005. We don't judge (much).
+                Drag and drop your .eml files like you&apos;re 2024&apos;s hottest DJ. Or click the button 
+                like it&apos;s 2005. We don&apos;t judge (much).
               </p>
               <div className="mt-3 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
                 <p className="text-sm text-indigo-800">
-                  <strong>Note:</strong> We'll process these bad boys and learn your writing style. 
-                  It's like having a digital twin, but less creepy and more useful.
+                  <strong>Note:</strong> We&apos;ll process these bad boys and learn your writing style. 
+                  It&apos;s like having a digital twin, but less creepy and more useful.
                 </p>
               </div>
             </div>
@@ -93,8 +93,8 @@ export default function InstructionsPage() {
               </p>
               <div className="mt-3 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-sm text-green-800">
-                  <strong>Reality check:</strong> We're using AI to mimic your style based on your past 
-                  emails. It's not mind-reading, it's pattern matching. Still pretty fucking cool though.
+                  <strong>Reality check:</strong> We&apos;re using AI to mimic your style based on your past 
+                  emails. It&apos;s not mind-reading, it&apos;s pattern matching. Still pretty fucking cool though.
                 </p>
               </div>
             </div>
@@ -105,19 +105,19 @@ export default function InstructionsPage() {
                 <span className="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">
                   🎉
                 </span>
-                That's It, You're Done
+                That&apos;s It, You&apos;re Done
               </h2>
               <p className="text-gray-700 leading-relaxed">
-                Seriously, that's the whole thing. Three steps. If you can't figure this out, 
-                maybe email isn't your problem. Check out the <span className="font-semibold">Knowledge Base</span> tab 
-                to see what we've learned about you (spoiler: you say "per my last email" way too much).
+                Seriously, that&apos;s the whole thing. Three steps. If you can&apos;t figure this out, 
+                maybe email isn&apos;t your problem. Check out the <span className="font-semibold">Knowledge Base</span> tab 
+                to see what we&apos;ve learned about you (spoiler: you say &quot;per my last email&quot; way too much).
               </p>
             </div>
           </div>
 
           <div className="mt-12 p-6 bg-gray-100 rounded-lg">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">
-              Still Confused? Here's the TL;DR:
+              Still Confused? Here&apos;s the TL;DR:
             </h3>
             <ol className="space-y-2 text-gray-700">
               <li className="flex items-start">
@@ -134,7 +134,7 @@ export default function InstructionsPage() {
               </li>
             </ol>
             <p className="mt-4 text-sm text-gray-600 italic">
-              If you're still lost, maybe try turning it off and on again? 
+              If you&apos;re still lost, maybe try turning it off and on again? 
               Or just write your own damn emails like a normal person.
             </p>
           </div>
