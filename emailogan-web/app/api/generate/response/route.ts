@@ -74,45 +74,75 @@ export async function POST(request: NextRequest) {
         sourceEmails = matches.map((match) => match.metadata as { from: string; to: string; subject: string; date: string; body: string });
         
         // Build context from similar emails - these are examples of YOUR writing style
-        context = matches.map((match) => {
+        context = matches.map((match, index) => {
           const meta = match.metadata as { from: string; to: string; subject: string; date: string; body: string };
-          return `Example Email:\nFrom: ${meta.from}\nTo: ${meta.to}\nSubject: ${meta.subject}\nContent: ${meta.body}`;
+          console.log(`Similar email #${index + 1} (score: ${match.score}):`);
+          console.log(`  Subject: ${meta.subject?.substring(0, 50)}...`);
+          console.log(`  Body preview: ${meta.body?.substring(0, 100)}...`);
+          return `Example Email #${index + 1}:\nFrom: ${meta.from}\nTo: ${meta.to}\nSubject: ${meta.subject}\nContent: ${meta.body}`;
         }).join('\n\n---\n\n');
         
         console.log('Context built from similar emails');
+        console.log(`Total context length: ${context.length} characters`);
       }
     }
     
     // Generate response
-    const systemPrompt = `You are an AI assistant that generates REPLY emails. Your task is to write a RESPONSE to an email that will be provided.
+    const systemPrompt = context 
+      ? `You are an AI assistant that MUST closely mimic a specific writing style.
 
-${context ? `CONTEXT - Previous emails showing your writing style and tone:
+CRITICAL INSTRUCTIONS - YOUR PRIMARY TASK:
+You MUST generate email responses that EXACTLY match the writing style, vocabulary, tone, and patterns shown in the example emails below. These examples represent how the user typically writes emails, and you must emulate their unique voice.
+
+EXAMPLE EMAILS FROM THE USER (STUDY THESE CAREFULLY):
 ${context}
 
-IMPORTANT: Study these examples carefully and mimic the writing style, tone, vocabulary, and patterns used in these emails. This helps maintain consistency with how you typically write emails.
+STYLE MIMICRY REQUIREMENTS - ANALYZE AND REPLICATE:
+- Vocabulary: Look for unique word choices, technical terms, and specific phrases
+- Tone: Is it formal/informal, logical/emotional, technical/casual?
+- Structure: How are sentences constructed? Short/long? Complex/simple?
+- Personality markers: Any unique expressions, catchphrases, or distinctive patterns?
+- Data usage: Do they cite statistics, percentages, probabilities?
+- Greetings/closings: Exact patterns used for opening and signing off
+- Reasoning style: How are arguments presented? Logical? Analytical? Emotional?
+- Cultural or professional references: Any domain-specific knowledge displayed?
 
-` : ''}
+CRITICAL: Your response MUST sound like it was written by the SAME PERSON who wrote the example emails
+
+TASK:
+Generate a REPLY to an email that will be provided, but write it EXACTLY in the style demonstrated above.
+The tone should be ${RESPONSE_STYLES[style as keyof typeof RESPONSE_STYLES] || RESPONSE_STYLES.professional} while still maintaining the unique voice from the examples.`
+      : `You are an AI assistant that generates professional email replies.
+
 INSTRUCTIONS:
-1. Generate a REPLY to the email provided (do NOT reword or rewrite the original email)
-2. Write as if you are responding TO the sender
-3. Address their questions, concerns, or topics
-4. Use a ${RESPONSE_STYLES[style as keyof typeof RESPONSE_STYLES] || RESPONSE_STYLES.professional} tone
-5. ${context ? 'Match the writing style from the example emails above' : 'Write naturally and professionally'}
-6. Sign off appropriately based on the context`;
+Generate a REPLY to the email provided using a ${RESPONSE_STYLES[style as keyof typeof RESPONSE_STYLES] || RESPONSE_STYLES.professional} tone.
+Write naturally and professionally.`;
     
     const userPrompt = `Please generate a reply to the following email:
 
 ${prompt}
 
 ---
+Remember: ${context ? 'You MUST write in the exact style shown in the example emails above.' : 'Write a professional response.'}
 Generate your REPLY below:`;
     
     console.log('Calling OpenAI for response generation...');
+    console.log('Using model: gpt-5');
     console.log('System prompt length:', systemPrompt.length);
     console.log('User prompt length:', userPrompt.length);
     
+    // Add verbose logging in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('--- FULL SYSTEM PROMPT ---');
+      console.log(systemPrompt);
+      console.log('--- END SYSTEM PROMPT ---');
+      console.log('--- FULL USER PROMPT ---');
+      console.log(userPrompt);
+      console.log('--- END USER PROMPT ---');
+    }
+    
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
+      model: 'gpt-5',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },

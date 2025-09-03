@@ -51,17 +51,27 @@ export async function POST(request: NextRequest) {
     }
     
     console.log('🔄 Preparing vectors for storage...');
-    const vectors: EmailVector[] = emails.map(email => ({
-      id: email.id,
-      values: email.embedding,
-      metadata: {
-        from: email.from,
-        to: email.to,
-        subject: email.subject,
-        date: typeof email.date === 'string' ? email.date : new Date(email.date).toISOString(),
-        body: email.body.substring(0, 1000), // Limit metadata size
-      },
-    }));
+    const vectors: EmailVector[] = emails.map((email, index) => {
+      // Log sample of what we're storing
+      if (index < 2) {
+        console.log(`📧 Email ${index + 1} sample:`);
+        console.log(`  Subject: ${email.subject}`);
+        console.log(`  Body length: ${email.body?.length} chars`);
+        console.log(`  Body preview: ${email.body?.substring(0, 200)}...`);
+      }
+      
+      return {
+        id: email.id,
+        values: email.embedding,
+        metadata: {
+          from: email.from,
+          to: email.to,
+          subject: email.subject,
+          date: typeof email.date === 'string' ? email.date : new Date(email.date).toISOString(),
+          body: email.body.substring(0, 4000), // Increased limit to capture full Spock style
+        },
+      };
+    });
     
     console.log(`📦 Upserting ${vectors.length} vectors to Pinecone...`);
     const result = await upsertEmailVectors(vectors);

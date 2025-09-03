@@ -1,17 +1,39 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useEmailStore } from '@/store/useEmailStore';
 
 export default function FileUploader() {
   const [isDragging, setIsDragging] = useState(false);
   const [extractionStatus, setExtractionStatus] = useState<string>('');
-  const { uploadMultipleEmails, isLoading, uploadProgress } = useEmailStore();
+  const [processingStage, setProcessingStage] = useState<'idle' | 'extracting' | 'uploading' | 'processing' | 'storing' | 'complete'>('idle');
+  const [filesProcessed, setFilesProcessed] = useState(0);
+  const [totalFiles, setTotalFiles] = useState(0);
+  const { uploadMultipleEmails, isLoading, isProcessing, uploadProgress } = useEmailStore();
+
+  useEffect(() => {
+    if (isProcessing) {
+      setProcessingStage('processing');
+    } else if (isLoading && uploadProgress < 100) {
+      setProcessingStage('uploading');
+    } else if (uploadProgress === 100 && !isProcessing && processingStage === 'uploading') {
+      setProcessingStage('storing');
+      setTimeout(() => {
+        setProcessingStage('complete');
+        setTimeout(() => {
+          setProcessingStage('idle');
+          setFilesProcessed(0);
+          setTotalFiles(0);
+        }, 5000);
+      }, 1500);
+    }
+  }, [isLoading, isProcessing, uploadProgress, processingStage]);
 
   const extractEmlFromZip = async (zipFile: File): Promise<File[]> => {
     console.log('🎯 Starting ZIP extraction for:', zipFile.name);
     setExtractionStatus('Extracting files from ZIP...');
+    setProcessingStage('extracting');
     
     try {
       // Dynamic import for browser-only code
@@ -44,10 +66,12 @@ export default function FileUploader() {
       
       console.log(`✨ Extracted ${emlFiles.length} .eml files from ZIP`);
       setExtractionStatus(`Extracted ${emlFiles.length} .eml files`);
+      setTotalFiles(emlFiles.length);
       return emlFiles;
     } catch (error) {
       console.error('❌ Error extracting ZIP:', error);
       setExtractionStatus('Error extracting ZIP file');
+      setProcessingStage('idle');
       throw error;
     }
   };
@@ -77,10 +101,13 @@ export default function FileUploader() {
     if (allEmlFiles.length > 0) {
       console.log(`🚀 Uploading ${allEmlFiles.length} .eml files`);
       setExtractionStatus('');
+      setFilesProcessed(0);
+      setTotalFiles(allEmlFiles.length);
       await uploadMultipleEmails(allEmlFiles);
     } else {
       console.warn('⚠️ No valid .eml files to upload');
       setExtractionStatus('No .eml files found');
+      setProcessingStage('idle');
     }
   }, [uploadMultipleEmails]);
 
@@ -96,17 +123,103 @@ export default function FileUploader() {
     onDragLeave: () => setIsDragging(false),
   });
 
+  const getProcessingMessage = () => {
+    switch (processingStage) {
+      case 'extracting':
+        return 'Extracting files from ZIP...';
+      case 'uploading':
+        return `Uploading emails... ${Math.round(uploadProgress)}%`;
+      case 'processing':
+        return 'Creating vector embeddings...';
+      case 'storing':
+        return 'Storing in vector database...';
+      case 'complete':
+        return '✓ Processing complete! You can now chat with your emails.';
+      default:
+        return extractionStatus || 'Drop .eml or .zip files here, or click to select';
+    }
+  };
+
+  const getProcessingColor = () => {
+    switch (processingStage) {
+      case 'complete':
+        return 'bg-green-50 border-green-200';
+      case 'idle':
+        return '';
+      default:
+        return 'bg-blue-50 border-blue-200';
+    }
+  };
+
   return (
     <div className="w-full">
+      {/* Processing Status Banner */}
+      {processingStage !== 'idle' && (
+        <div className={`mb-4 p-4 rounded-lg border ${getProcessingColor()}`}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center space-x-3">
+              {processingStage === 'complete' ? (
+                <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <svg className="animate-spin h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              )}
+              <div>
+                <p className={`font-medium ${processingStage === 'complete' ? 'text-green-800' : 'text-blue-800'}`}>
+                  {getProcessingMessage()}
+                </p>
+                {totalFiles > 0 && processingStage !== 'complete' && (
+                  <p className="text-sm text-gray-600">
+                    Processing {totalFiles} email{totalFiles !== 1 ? 's' : ''}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* Progress bar */}
+          {(processingStage === 'uploading' || processingStage === 'processing') && (
+            <div className="mt-3">
+              <div className="bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+          
+          {processingStage === 'extracting' && (
+            <div className="mt-3">
+              <div className="bg-gray-200 rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full animate-pulse w-full" />
+              </div>
+            </div>
+          )}
+          
+          {processingStage === 'storing' && (
+            <div className="mt-3">
+              <div className="bg-gray-200 rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full animate-pulse w-full" />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       <div
         {...getRootProps()}
         className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
           isDragging
             ? 'border-indigo-500 bg-indigo-50'
             : 'border-gray-300 hover:border-gray-400'
-        }`}
+        } ${processingStage !== 'idle' && processingStage !== 'complete' ? 'opacity-50 pointer-events-none' : ''}`}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()} disabled={processingStage !== 'idle' && processingStage !== 'complete'} />
         <svg
           className="mx-auto h-12 w-12 text-gray-400"
           stroke="currentColor"
@@ -121,33 +234,12 @@ export default function FileUploader() {
           />
         </svg>
         <p className="mt-2 text-sm text-gray-600">
-          {isLoading
-            ? `Uploading... ${Math.round(uploadProgress)}%`
-            : extractionStatus
-            ? extractionStatus
-            : 'Drop .eml or .zip files here, or click to select'}
+          Drop .eml or .zip files here, or click to select
         </p>
         <p className="mt-1 text-xs text-gray-500">
           Supports individual .eml files or ZIP archives containing .eml files
         </p>
       </div>
-
-      {extractionStatus && (
-        <div className="mt-2 p-2 bg-blue-50 rounded-md">
-          <p className="text-sm text-blue-800">{extractionStatus}</p>
-        </div>
-      )}
-
-      {isLoading && (
-        <div className="mt-4">
-          <div className="bg-gray-200 rounded-full h-2">
-            <div
-              className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${uploadProgress}%` }}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

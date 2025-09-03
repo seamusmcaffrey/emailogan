@@ -1,5 +1,166 @@
 # Email RAG Assistant - Changelog
 
+## Version 3.3.0 - January 3, 2025 - ENHANCED STYLE MATCHING & GPT-5 UPGRADE
+
+### 🚀 Model Upgrade
+- **Upgraded to GPT-5 model** for improved response generation
+  - Updated `/emailogan-web/app/api/generate/response/route.ts` (line 144)
+  - Updated `/response_generator.py` (line 22)
+  - Added model logging confirmation: "Using model: gpt-5"
+
+### 🎯 Critical Style Matching Improvements
+
+#### Issue Identified
+- Embeddings were being retrieved but not effectively utilized for style matching
+- Generated responses weren't mimicking the distinctive writing style of stored emails (e.g., Spock's logical, analytical tone)
+- Email body content was being truncated, losing crucial style information
+
+#### Prompt Engineering Overhaul
+- **Completely rewrote system prompts** for stronger style emphasis:
+  - Added "CRITICAL INSTRUCTIONS - YOUR PRIMARY TASK" section
+  - Explicit requirements to "EXACTLY match the writing style"
+  - Detailed style analysis checklist (vocabulary, tone, structure, personality markers, etc.)
+  - Reinforcement in user prompt: "You MUST write in the exact style shown"
+
+#### Vector Storage Enhancement
+- **Increased email body limit** from 1000 to 4000 characters
+  - Ensures complete writing style is captured, especially for detailed/technical emails
+  - Critical for preserving distinctive voice patterns and unique expressions
+
+### 📊 Enhanced Logging & Debugging
+
+#### Added Comprehensive Logging
+- **Vector Storage Logging**:
+  - Email sample previews during storage
+  - Body length tracking
+  - First 200 characters preview for verification
+  
+- **Retrieval Logging**:
+  - Similarity scores for each matched email
+  - Subject and body previews of retrieved context
+  - Total context length in characters
+  
+- **Development Mode Logging**:
+  - Full system and user prompts displayed
+  - Helps verify embeddings are included correctly
+  - Model selection confirmation
+
+### 🔧 Technical Changes
+
+#### Files Modified
+1. **`/emailogan-web/app/api/generate/response/route.ts`**:
+   - Lines 87-119: Enhanced prompt structure with conditional logic
+   - Line 144: Model upgrade to gpt-5
+   - Lines 77-86: Added logging for retrieved email context
+   - Lines 125-133: Development mode verbose logging
+
+2. **`/emailogan-web/app/api/vectors/store/route.ts`**:
+   - Line 71: Increased body storage limit (1000 → 4000)
+   - Lines 54-74: Added storage logging with email previews
+
+3. **`/response_generator.py`**:
+   - Line 22: Model upgrade to gpt-5
+   - Line 26: Added model confirmation in logs
+
+### ✨ Key Improvements
+- Responses will now strongly reflect the writing style of stored emails
+- Better preservation of unique vocabulary, phrases, and communication patterns
+- Full visibility into what prompts are being sent to the AI model
+- Increased capacity for storing longer, more detailed emails
+
+### 🎯 Impact
+Users will experience:
+- Dramatically improved style matching when "Use knowledge base" is enabled
+- Responses that genuinely sound like they're from the same author as stored emails
+- Better handling of technical or specialized writing styles
+- Clear logging to verify embeddings are being used effectively
+
+## Version 3.2.0 - January 3, 2025 - EMAIL REPLY GENERATION FIXES
+
+### 🚨 Critical Issues Fixed
+
+#### Email Generation Now Creates Replies (Not Rewrites)
+- **Issue**: System was rewording/rewriting the input email instead of generating replies
+- **Root Cause**: Vague prompt "draft email responses" was ambiguous
+- **Solution**: Completely rewrote prompt engineering to explicitly generate REPLIES
+- **Impact**: System now correctly generates responses TO emails, not rewrites OF them
+
+### 🎯 Prompt Engineering Improvements
+
+#### Rewrote System Prompts (route.ts:74-95)
+```typescript
+// Before: Ambiguous
+"You are an AI assistant helping to draft email responses"
+
+// After: Explicit
+"You are an AI assistant that generates REPLY emails. 
+Your task is to write a RESPONSE to an email that will be provided."
+```
+
+#### Added Clear User Prompt Framing
+- Explicitly frames input as "Please generate a reply to the following email:"
+- Adds separator and clear directive: "Generate your REPLY below:"
+- Removes ambiguity about whether to rewrite or reply
+
+#### Enhanced Context Usage
+- When knowledge base is enabled, context now explicitly states:
+  - "CONTEXT - Previous emails showing your writing style and tone"
+  - "Study these examples carefully and mimic the writing style"
+- Increased retrieval from 3 to 5 emails for better style matching
+- Better formatting of example emails with clear labels
+
+### 📊 Enhanced Logging & Observability
+
+#### Added Comprehensive API Logging
+- Entry point logging: "Generate API called"
+- Request parameter logging with prompt length
+- OpenAI API call tracking:
+  - "Using knowledge base - generating embeddings..."
+  - "OpenAI embedding generated"
+  - "Querying vector database..."
+  - "Found X matching emails"
+  - "Calling OpenAI for response generation..."
+- Detailed error logging with stack traces
+
+#### Why Logs Weren't Showing
+- Previous error handling only logged generic messages
+- No logging before/after OpenAI calls
+- Missing console.log statements throughout the flow
+- Now tracks every step of the generation process
+
+### 🎨 UI/UX Improvements
+
+#### Clarified Input Field
+- Changed label from "Email Prompt" to "Email to Reply To"
+- Updated placeholder: "Paste the email you want to reply to here..."
+- Increased textarea from 4 to 8 rows for better visibility
+- Added helper text: "When enabled, uses your stored emails to match your writing style"
+
+### ✅ Testing & Validation
+
+#### Created Test Script
+- `test-email-generation.js` for validating fixes
+- Tests both with/without knowledge base
+- Validates responses are replies, not rewrites
+- Checks for proper addressing of sender
+
+### 📝 Key Changes Summary
+
+1. **Prompt Engineering**: Complete rewrite to explicitly generate replies
+2. **Logging**: Added 10+ new log points for full observability
+3. **UI Clarity**: Better labels and helper text
+4. **Context Handling**: Improved how embeddings inform style
+5. **Error Details**: Enhanced error messages with full details
+
+### 🚀 Impact
+
+Users will now see:
+- Proper email replies addressing the sender (e.g., "Dear Sean,")
+- Responses that acknowledge the content of the original email
+- Style matching from stored emails when knowledge base is enabled
+- Clear logs in Vercel showing all OpenAI API calls
+- Better understanding of what the system is doing
+
 ## Version 3.1.0 - January 3, 2025 - PRODUCTION DEPLOYMENT FIXES
 
 ### 🚀 Critical Production Fixes

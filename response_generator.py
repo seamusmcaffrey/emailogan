@@ -19,11 +19,11 @@ class ResponseGenerator:
             raise ValueError("OPENAI_API_KEY not found in secrets. Please add it to .streamlit/secrets.toml")
         
         self.llm = OpenAI(
-            model="gpt-4",
+            model="gpt-5",
             api_key=api_key,
             temperature=0.3  # Lower temperature for better adherence to RAG style
         )
-        logger.info("ResponseGenerator initialized successfully")
+        logger.info("ResponseGenerator initialized successfully with model: gpt-5")
     
     def generate_response(self, 
                          incoming_email: str, 
