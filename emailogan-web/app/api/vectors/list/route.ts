@@ -1,7 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getPineconeClient } from '@/lib/pinecone';
 
-export async function GET(request: NextRequest) {
+interface PineconeMatch {
+  id: string;
+  values?: number[];
+  metadata?: {
+    sender?: string;
+    to?: string;
+    subject?: string;
+    date?: string;
+    body_preview?: string;
+  };
+}
+
+export async function GET() {
   try {
     console.log('📋 Fetching all vectors from Pinecone...');
     
@@ -19,7 +31,7 @@ export async function GET(request: NextRequest) {
     console.log(`✅ Found ${queryResponse.matches?.length || 0} vectors in Pinecone`);
     
     // Transform Pinecone results to email format
-    const emails = queryResponse.matches?.map((match: any) => ({
+    const emails = queryResponse.matches?.map((match: PineconeMatch) => ({
       id: match.id,
       from: match.metadata?.sender || '',
       to: match.metadata?.to || '',
@@ -33,10 +45,11 @@ export async function GET(request: NextRequest) {
       emails,
       count: emails.length 
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('❌ Failed to fetch vectors:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return NextResponse.json(
-      { error: 'Failed to fetch vectors', details: error.message },
+      { error: 'Failed to fetch vectors', details: errorMessage },
       { status: 500 }
     );
   }

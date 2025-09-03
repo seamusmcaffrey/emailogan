@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getPineconeClient } from '@/lib/pinecone';
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
   try {
     console.log('🗑️ Clearing all vectors from Pinecone...');
     
@@ -17,10 +17,11 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'All vectors have been cleared from the knowledge base' 
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('❌ Failed to clear vectors:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return NextResponse.json(
-      { error: 'Failed to clear vectors', details: error.message },
+      { error: 'Failed to clear vectors', details: errorMessage },
       { status: 500 }
     );
   }
