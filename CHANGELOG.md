@@ -1,5 +1,115 @@
 # Email RAG Assistant - Changelog
 
+## Version 3.0.0 - September 3, 2025 - DUAL DEPLOYMENT ARCHITECTURE
+
+### 🚀 Major Architecture Changes
+
+#### Dual Application Support
+- **Streamlit App** (Python) - Original email processing application in root directory
+- **Next.js App** (TypeScript) - New web application in `emailogan-web/` directory
+- Both apps maintained for different deployment targets:
+  - Streamlit → Streamlit Cloud deployment
+  - Next.js → Vercel deployment
+
+#### Next.js/Vercel Implementation
+- Created full Next.js 14 application with TypeScript
+- Implemented API routes for email processing
+- Added JWT-based authentication system
+- Client-side ZIP extraction using JSZip
+- Comprehensive logging throughout the stack
+
+### 🎯 Key Features Added
+
+#### ZIP File Support (Both Apps)
+- **Streamlit App**:
+  - Fixed ZIP extraction to process ALL .eml files (not just "batch.eml")
+  - Server-side extraction using Python's zipfile module
+  - Clear user feedback during extraction
+  
+- **Next.js App**:
+  - Client-side ZIP extraction using JSZip
+  - Real-time extraction progress feedback
+  - Support for nested folder structures
+  - Filters out macOS system files automatically
+
+#### Enhanced Logging & Debugging
+- **Client-side logging** with emojis for easy identification:
+  - 📥 File drops, 🗜️ ZIP processing, ✅ Success, ❌ Errors
+  - Detailed progress tracking for batch uploads
+  - File-by-file processing status
+
+- **Server-side logging**:
+  - API route debugging with authentication checks
+  - Environment variable validation
+  - Detailed error messages with setup instructions
+
+#### Environment Configuration
+- **Middleware validation** for required environment variables
+- **Clear error messages** showing exactly which vars are missing
+- **Setup documentation** (VERCEL_ENV_SETUP.md) with:
+  - No-quotes requirement emphasized
+  - JWT secret generation instructions
+  - Step-by-step Vercel dashboard guidance
+
+### 🐛 Bug Fixes & Issues Resolved
+
+#### Vercel Deployment Issues
+- Fixed "no pages or app directory" error by:
+  - Setting root directory to `emailogan-web` in Vercel settings
+  - Removing invalid `rootDirectory` from vercel.json
+
+#### Environment Variable Issues
+- Added detailed error responses showing missing variables
+- Created comprehensive setup guide
+- Clarified that Vercel env vars must be added WITHOUT quotes
+
+### 📁 Files Created/Modified
+
+#### Created
+- `emailogan-web/` - Complete Next.js application directory
+- `emailogan-web/VERCEL_ENV_SETUP.md` - Environment setup guide
+- Multiple TypeScript components and API routes
+
+#### Modified
+- `app.py` - Fixed ZIP extraction logic
+- `email_processor_simple.py` - Added create_vector_database function
+- Various Next.js components for logging and error handling
+
+### 🔧 Technical Stack
+
+#### Streamlit App (Python)
+- Python 3.11+
+- Streamlit for UI
+- OpenAI API for embeddings/generation
+- Pinecone for vector storage
+
+#### Next.js App (TypeScript)
+- Next.js 14 with App Router
+- TypeScript for type safety
+- Tailwind CSS for styling
+- Zustand for state management
+- Axios for API calls
+- JSZip for client-side ZIP handling
+- JWT for authentication
+
+### 📊 Current Status
+
+#### Working
+- ✅ ZIP file extraction (both apps)
+- ✅ File upload UI with progress
+- ✅ Client-side processing
+- ✅ Comprehensive logging
+
+#### Pending Resolution
+- ⚠️ Environment variables need to be configured in Vercel (without quotes)
+- ⚠️ API routes return 503 until env vars are set
+
+### 🎓 Key Learnings
+1. Vercel env vars must be added WITHOUT quotes
+2. Client-side ZIP extraction provides better UX than server-side
+3. Comprehensive logging is essential for debugging deployments
+4. Clear error messages save debugging time
+
 ## Version 2.3.0 - September 2, 2025 (Evening) - DEPLOYMENT FIXES
 
 ### 🚨 Critical Streamlit Cloud Deployment Issues Resolved
