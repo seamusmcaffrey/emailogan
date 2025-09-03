@@ -17,7 +17,8 @@ export async function getPineconeClient(): Promise<Pinecone> {
 
 export async function getIndex(indexName?: string) {
   const client = await getPineconeClient();
-  const name = indexName || process.env.PINECONE_INDEX_NAME || 'email-embeddings';
+  const name = indexName || process.env.PINECONE_INDEX_NAME || 'email-rag-index';
+  console.log(`📌 Using Pinecone index: ${name}`);
   return client.index(name);
 }
 
