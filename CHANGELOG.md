@@ -1,5 +1,23 @@
 # Email RAG Assistant - Changelog
 
+## Version 3.3.1 - January 3, 2025 - OPENAI API PARAMETER FIXES FOR GPT-5
+
+### 🐛 Critical Fixes
+- **Fixed OpenAI API Errors for GPT-5 compatibility**:
+  1. **max_tokens parameter**: 
+     - GPT-5 requires `max_completion_tokens` instead of `max_tokens`
+     - Changed from `max_tokens: 1000` to `max_completion_tokens: 1000`
+  2. **temperature parameter**:
+     - GPT-5 only supports default temperature (1.0), not custom values
+     - Removed `temperature: 0.7` parameter to use default
+     - Updated `/emailogan-web/app/api/generate/response/route.ts` (lines 150-151)
+
+### 🎯 Impact
+- Email response generation now works correctly with GPT-5
+- No more 500 Internal Server Errors from unsupported parameters
+- Maintains same 1000 token limit for response generation
+- Uses GPT-5's default temperature for consistent output
+
 ## Version 3.3.0 - January 3, 2025 - ENHANCED STYLE MATCHING & GPT-5 UPGRADE
 
 ### 🚀 Model Upgrade

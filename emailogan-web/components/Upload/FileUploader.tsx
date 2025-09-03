@@ -18,7 +18,8 @@ export default function FileUploader() {
       setProcessingStage('processing');
     } else if (isStoringVectors) {
       setProcessingStage('storing');
-    } else if (!isLoading && !isProcessing && !isStoringVectors && processingStage === 'storing') {
+    } else if (!isLoading && !isProcessing && !isStoringVectors && 
+               (processingStage === 'storing' || processingStage === 'processing')) {
       // All processing complete
       setProcessingStage('complete');
       setTimeout(() => {
