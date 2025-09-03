@@ -147,12 +147,18 @@ Generate your REPLY below:`;
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
-      max_completion_tokens: 1000,
     });
     
     console.log('OpenAI response received');
+    console.log('Completion object:', JSON.stringify(completion, null, 2));
     
-    const response = completion.choices[0].message.content;
+    const response = completion.choices[0]?.message?.content || '';
+    
+    if (!response) {
+      console.error('Empty response from OpenAI');
+      console.error('Full completion:', completion);
+      throw new Error('OpenAI returned empty response');
+    }
     
     return NextResponse.json({
       success: true,
