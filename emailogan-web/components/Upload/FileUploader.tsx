@@ -8,7 +8,6 @@ export default function FileUploader() {
   const [isDragging, setIsDragging] = useState(false);
   const [extractionStatus, setExtractionStatus] = useState<string>('');
   const [processingStage, setProcessingStage] = useState<'idle' | 'extracting' | 'uploading' | 'processing' | 'storing' | 'complete'>('idle');
-  const [filesProcessed, setFilesProcessed] = useState(0);
   const [totalFiles, setTotalFiles] = useState(0);
   const { uploadMultipleEmails, isLoading, isProcessing, uploadProgress } = useEmailStore();
 
@@ -23,7 +22,6 @@ export default function FileUploader() {
         setProcessingStage('complete');
         setTimeout(() => {
           setProcessingStage('idle');
-          setFilesProcessed(0);
           setTotalFiles(0);
         }, 5000);
       }, 1500);
@@ -101,7 +99,6 @@ export default function FileUploader() {
     if (allEmlFiles.length > 0) {
       console.log(`🚀 Uploading ${allEmlFiles.length} .eml files`);
       setExtractionStatus('');
-      setFilesProcessed(0);
       setTotalFiles(allEmlFiles.length);
       await uploadMultipleEmails(allEmlFiles);
     } else {

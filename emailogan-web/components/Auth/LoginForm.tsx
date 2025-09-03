@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
 
@@ -12,7 +12,7 @@ export default function LoginForm() {
   const login = useAuthStore((state) => state.login);
   const router = useRouter();
 
-  const handleSubmit = async (e?: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setError('');
     setIsLoading(true);
@@ -25,7 +25,7 @@ export default function LoginForm() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [password, login, router]);
 
   // Auto-login on mount for testing
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function LoginForm() {
       console.log('🔐 Auto-logging in with default password for testing...');
       handleSubmit();
     }
-  }, [autoLoginAttempted]);
+  }, [autoLoginAttempted, handleSubmit]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
