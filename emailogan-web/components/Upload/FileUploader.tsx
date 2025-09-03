@@ -9,24 +9,24 @@ export default function FileUploader() {
   const [extractionStatus, setExtractionStatus] = useState<string>('');
   const [processingStage, setProcessingStage] = useState<'idle' | 'extracting' | 'uploading' | 'processing' | 'storing' | 'complete'>('idle');
   const [totalFiles, setTotalFiles] = useState(0);
-  const { uploadMultipleEmails, isLoading, isProcessing, uploadProgress } = useEmailStore();
+  const { uploadMultipleEmails, isLoading, isProcessing, isStoringVectors, uploadProgress } = useEmailStore();
 
   useEffect(() => {
-    if (isProcessing) {
-      setProcessingStage('processing');
-    } else if (isLoading && uploadProgress < 100) {
+    if (isLoading && uploadProgress < 100) {
       setProcessingStage('uploading');
-    } else if (uploadProgress === 100 && !isProcessing && processingStage === 'uploading') {
+    } else if (isProcessing) {
+      setProcessingStage('processing');
+    } else if (isStoringVectors) {
       setProcessingStage('storing');
+    } else if (!isLoading && !isProcessing && !isStoringVectors && processingStage === 'storing') {
+      // All processing complete
+      setProcessingStage('complete');
       setTimeout(() => {
-        setProcessingStage('complete');
-        setTimeout(() => {
-          setProcessingStage('idle');
-          setTotalFiles(0);
-        }, 5000);
-      }, 1500);
+        setProcessingStage('idle');
+        setTotalFiles(0);
+      }, 5000);
     }
-  }, [isLoading, isProcessing, uploadProgress, processingStage]);
+  }, [isLoading, isProcessing, isStoringVectors, uploadProgress, processingStage]);
 
   const extractEmlFromZip = async (zipFile: File): Promise<File[]> => {
     console.log('🎯 Starting ZIP extraction for:', zipFile.name);

@@ -15,6 +15,7 @@ interface EmailState {
   emails: Email[];
   isLoading: boolean;
   isProcessing: boolean;
+  isStoringVectors: boolean;
   uploadProgress: number;
   uploadEmail: (file: File) => Promise<Email>;
   uploadMultipleEmails: (files: File[]) => Promise<void>;
@@ -27,6 +28,7 @@ export const useEmailStore = create<EmailState>((set, get) => ({
   emails: [],
   isLoading: false,
   isProcessing: false,
+  isStoringVectors: false,
   uploadProgress: 0,
   
   uploadEmail: async (file: File) => {
@@ -128,12 +130,15 @@ export const useEmailStore = create<EmailState>((set, get) => ({
   
   storeInVectorDB: async (emails: Email[]) => {
     console.log(`🗄️ Storing ${emails.length} emails in vector database...`);
+    set({ isStoringVectors: true });
     try {
       const response = await axios.post('/api/vectors/store', { emails });
       console.log('✅ Vector storage response:', response.data);
     } catch (error: any) {
       console.error('❌ Vector storage failed:', error.response?.data || error.message);
       throw error;
+    } finally {
+      set({ isStoringVectors: false });
     }
   },
   
