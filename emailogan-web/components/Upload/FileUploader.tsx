@@ -12,7 +12,7 @@ export default function FileUploader() {
   const { uploadMultipleEmails, isLoading, isProcessing, isStoringVectors, uploadProgress } = useEmailStore();
 
   useEffect(() => {
-    if (isLoading && uploadProgress < 100) {
+    if (isLoading && uploadProgress > 0 && uploadProgress < 100) {
       setProcessingStage('uploading');
     } else if (isProcessing) {
       setProcessingStage('processing');

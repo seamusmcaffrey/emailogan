@@ -127,7 +127,7 @@ Remember: ${context ? 'You MUST write in the exact style shown in the example em
 Generate your REPLY below:`;
     
     console.log('Calling OpenAI for response generation...');
-    console.log('Using model: gpt-5');
+    console.log('Using model: gpt-4');
     console.log('System prompt length:', systemPrompt.length);
     console.log('User prompt length:', userPrompt.length);
     
@@ -142,7 +142,7 @@ Generate your REPLY below:`;
     }
     
     const completion = await openai.chat.completions.create({
-      model: 'gpt-5',
+      model: 'gpt-4',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
