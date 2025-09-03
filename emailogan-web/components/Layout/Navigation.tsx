@@ -16,6 +16,7 @@ export default function Navigation() {
   if (!isAuthenticated) return null;
 
   const navItems = [
+    { href: '/instructions', label: 'Instructions' },
     { href: '/upload', label: 'Upload Emails' },
     { href: '/generate', label: 'Generate Response' },
     { href: '/knowledge', label: 'Knowledge Base' },
