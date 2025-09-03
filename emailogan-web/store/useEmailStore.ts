@@ -156,10 +156,18 @@ export const useEmailStore = create<EmailState>((set, get) => ({
       const response = await axios.get('/api/vectors/list');
       console.log(`✅ Fetched ${response.data.emails.length} emails from vector database`);
       
-      set({ 
-        emails: response.data.emails,
-        isLoading: false 
-      });
+      // Only update if we got results, or if we have no emails yet
+      const currentEmails = get().emails;
+      if (response.data.emails.length > 0 || currentEmails.length === 0) {
+        set({ 
+          emails: response.data.emails,
+          isLoading: false 
+        });
+      } else {
+        // Keep existing emails if API returns empty but we have emails
+        console.log('⚠️ API returned no emails, keeping existing state');
+        set({ isLoading: false });
+      }
     } catch (error: any) {
       console.error('❌ Failed to fetch emails from vector database:', error.message);
       set({ isLoading: false });

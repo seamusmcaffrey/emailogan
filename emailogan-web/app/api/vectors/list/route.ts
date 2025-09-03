@@ -5,11 +5,11 @@ interface PineconeMatch {
   id: string;
   values?: number[];
   metadata?: {
-    sender?: string;
+    from?: string;
     to?: string;
     subject?: string;
     date?: string;
-    body_preview?: string;
+    body?: string;
   };
 }
 
@@ -33,11 +33,11 @@ export async function GET() {
     // Transform Pinecone results to email format
     const emails = queryResponse.matches?.map((match: PineconeMatch) => ({
       id: match.id,
-      from: match.metadata?.sender || '',
+      from: match.metadata?.from || '',
       to: match.metadata?.to || '',
       subject: match.metadata?.subject || '',
       date: match.metadata?.date ? new Date(match.metadata.date) : new Date(),
-      body: match.metadata?.body_preview || '',
+      body: match.metadata?.body || '',
       embedding: match.values || undefined,
     })) || [];
     
