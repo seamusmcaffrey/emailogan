@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useAuthStore } from '@/store/auth-store';
+import { useAuthStore } from '@/store/useAuthStore';
 import LoginForm from '@/components/Auth/LoginForm';
 
 export default function HomePage() {
