@@ -116,6 +116,9 @@ export const useEmailStore = create<EmailState>((set, get) => ({
       await get().storeInVectorDB(processedEmails);
     } catch (error: any) {
       console.error('❌ Processing failed:', error.response?.data || error.message);
+      if (error.response?.data?.details) {
+        console.error('📋 Error details:', error.response.data.details);
+      }
       throw error;
     } finally {
       set({ isProcessing: false });
