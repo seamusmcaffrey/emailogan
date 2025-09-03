@@ -1,18 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('blocklogan1988');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [autoLoginAttempted, setAutoLoginAttempted] = useState(false);
   const login = useAuthStore((state) => state.login);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError('');
     setIsLoading(true);
 
@@ -26,6 +27,15 @@ export default function LoginForm() {
     }
   };
 
+  // Auto-login on mount for testing
+  useEffect(() => {
+    if (!autoLoginAttempted) {
+      setAutoLoginAttempted(true);
+      console.log('🔐 Auto-logging in with default password for testing...');
+      handleSubmit();
+    }
+  }, [autoLoginAttempted]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8">
@@ -34,8 +44,13 @@ export default function LoginForm() {
             Email RAG Assistant
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Enter your password to continue
+            {isLoading && !error ? 'Auto-logging in for testing...' : 'Enter your password to continue'}
           </p>
+          {isLoading && !error && (
+            <p className="mt-2 text-center text-xs text-gray-500">
+              Using default password: blocklogan1988
+            </p>
+          )}
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">

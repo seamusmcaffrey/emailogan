@@ -4,7 +4,7 @@ export interface ParsedEmail {
   from: string;
   to: string;
   subject: string;
-  date: Date;
+  date: Date | string;
   body: string;
   html?: string;
   attachments?: Array<{
@@ -66,10 +66,15 @@ function extractHtmlFromBody(body: string): string | undefined {
 }
 
 export function sanitizeEmailForEmbedding(email: ParsedEmail): string {
+  // Ensure date is a Date object (handle both Date objects and date strings)
+  const dateStr = email.date instanceof Date 
+    ? email.date.toISOString() 
+    : new Date(email.date).toISOString();
+    
   return `From: ${email.from}
 To: ${email.to}
 Subject: ${email.subject}
-Date: ${email.date.toISOString()}
+Date: ${dateStr}
 
 ${email.body}`.substring(0, 8000); // Limit to 8000 chars for embedding
 }
