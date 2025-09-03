@@ -9,14 +9,18 @@ import { useRouter } from 'next/navigation';
 
 export default function UploadPage() {
   const emails = useEmailStore((state) => state.emails);
+  const fetchEmailsFromVectorDB = useEmailStore((state) => state.fetchEmailsFromVectorDB);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const router = useRouter();
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/');
+    } else {
+      // Fetch existing emails from vector database on page load
+      fetchEmailsFromVectorDB();
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, fetchEmailsFromVectorDB]);
 
   if (!isAuthenticated) {
     return null;

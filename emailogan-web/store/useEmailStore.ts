@@ -22,6 +22,8 @@ interface EmailState {
   processEmails: (emails: Email[]) => Promise<void>;
   storeInVectorDB: (emails: Email[]) => Promise<void>;
   clearEmails: () => void;
+  fetchEmailsFromVectorDB: () => Promise<void>;
+  clearKnowledgeBase: () => Promise<void>;
 }
 
 export const useEmailStore = create<EmailState>((set, get) => ({
@@ -144,5 +146,44 @@ export const useEmailStore = create<EmailState>((set, get) => ({
   
   clearEmails: () => {
     set({ emails: [], uploadProgress: 0 });
+  },
+  
+  fetchEmailsFromVectorDB: async () => {
+    console.log('🔍 Fetching emails from vector database...');
+    set({ isLoading: true });
+    
+    try {
+      const response = await axios.get('/api/vectors/list');
+      console.log(`✅ Fetched ${response.data.emails.length} emails from vector database`);
+      
+      set({ 
+        emails: response.data.emails,
+        isLoading: false 
+      });
+    } catch (error: any) {
+      console.error('❌ Failed to fetch emails from vector database:', error.message);
+      set({ isLoading: false });
+    }
+  },
+  
+  clearKnowledgeBase: async () => {
+    console.log('🗑️ Clearing entire knowledge base...');
+    set({ isLoading: true });
+    
+    try {
+      const response = await axios.delete('/api/vectors/clear');
+      console.log('✅ Knowledge base cleared:', response.data.message);
+      
+      // Clear local state after successful deletion
+      set({ 
+        emails: [],
+        isLoading: false,
+        uploadProgress: 0 
+      });
+    } catch (error: any) {
+      console.error('❌ Failed to clear knowledge base:', error.message);
+      set({ isLoading: false });
+      throw error;
+    }
   },
 }));
