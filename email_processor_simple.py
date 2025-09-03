@@ -210,3 +210,51 @@ class EmailProcessor:
             'avg_body_length': int(avg_body_length),
             'date_range': date_range
         }
+
+def create_vector_database(parsed_emails):
+    """Main function to create vector database"""
+    import streamlit as st
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    logger.info(f"Starting vector database creation with {len(parsed_emails)} emails")
+    
+    if not parsed_emails:
+        st.error("No emails to process")
+        logger.error("No emails provided to create_vector_database")
+        return
+    
+    try:
+        from vector_manager import VectorManager
+        vector_manager = VectorManager()
+        
+        logger.info("VectorManager initialized, creating vector store...")
+        index = vector_manager.create_vector_store(parsed_emails)
+        
+        if index:
+            st.session_state['vector_index'] = index
+            st.session_state['vector_ready'] = True
+            logger.info("Vector database created and stored in session state")
+            
+            st.balloons()
+            st.success("🎉 Your email knowledge base is ready!")
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("📧 Emails Processed", len(parsed_emails))
+            with col2:
+                unique_senders = len(set([email['from'] for email in parsed_emails]))
+                st.metric("👥 Unique Senders", unique_senders)
+            with col3:
+                st.metric("🗃️ Vector Dimensions", 1536)
+            
+            return index
+        else:
+            logger.error("Vector store creation returned None")
+            st.error("Failed to create vector database - no index returned")
+            return None
+            
+    except Exception as e:
+        logger.error(f"Error creating vector database: {str(e)}", exc_info=True)
+        st.error(f"Failed to create vector database: {str(e)}")
+        return None

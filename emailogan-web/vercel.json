@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "app/api/emails/process/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/generate/response/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/emails/upload/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}

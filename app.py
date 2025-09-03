@@ -77,7 +77,7 @@ def upload_and_process_page():
     with col1:
         upload_type = st.radio(
             "Upload Type",
-            ["Individual .eml files", "ZIP file containing .eml files"],
+            ["Individual .eml files", "ZIP file containing batch.eml files"],
             horizontal=True
         )
     
@@ -98,10 +98,10 @@ def upload_and_process_page():
         )
     else:
         zip_file = st.file_uploader(
-            "Choose a ZIP file containing .eml files",
+            "Choose a ZIP file containing batch.eml files",
             type=['zip'],
             accept_multiple_files=False,
-            help="Upload a ZIP file containing .eml files"
+            help="Upload a ZIP file containing batch.eml files (each batch.eml can be in different folders)"
         )
         uploaded_files = None
         
@@ -400,9 +400,9 @@ def main():
         knowledge_base_page()
 
 def extract_eml_from_zip(zip_file):
-    """Extract .eml files from uploaded ZIP file"""
+    """Extract batch.eml files from uploaded ZIP file"""
     eml_files = []
-    logger.info(f"Extracting .eml files from ZIP: {zip_file.name}")
+    logger.info(f"Extracting batch.eml files from ZIP: {zip_file.name}")
     
     try:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -410,25 +410,35 @@ def extract_eml_from_zip(zip_file):
             
             with zipfile.ZipFile(io.BytesIO(zip_bytes), 'r') as zip_ref:
                 for file_info in zip_ref.namelist():
-                    if file_info.lower().endswith('.eml') and not file_info.startswith('__MACOSX/'):
+                    # Check specifically for batch.eml files (case-insensitive)
+                    filename = os.path.basename(file_info).lower()
+                    if filename == 'batch.eml' and not file_info.startswith('__MACOSX/'):
                         file_data = zip_ref.read(file_info)
+                        
+                        # Include the directory path in the name to distinguish between different batch.eml files
+                        dir_path = os.path.dirname(file_info)
+                        if dir_path:
+                            display_name = f"{dir_path}/batch.eml"
+                        else:
+                            display_name = "batch.eml"
                         
                         class EMLFile:
                             def __init__(self, name, data):
-                                self.name = os.path.basename(name)
+                                self.name = name
                                 self.data = data
                             
                             def read(self):
                                 return self.data
                         
-                        eml_files.append(EMLFile(file_info, file_data))
+                        eml_files.append(EMLFile(display_name, file_data))
+                        logger.info(f"Found batch.eml at: {file_info}")
             
             if eml_files:
-                st.success(f"📦 Found {len(eml_files)} .eml files in ZIP")
-                logger.info(f"Successfully extracted {len(eml_files)} .eml files from ZIP")
+                st.success(f"📦 Found {len(eml_files)} batch.eml file(s) in ZIP")
+                logger.info(f"Successfully extracted {len(eml_files)} batch.eml files from ZIP")
             else:
-                st.warning("⚠️ No .eml files found in the ZIP archive")
-                logger.warning("No .eml files found in ZIP archive")
+                st.warning("⚠️ No batch.eml files found in the ZIP archive. Make sure your ZIP contains files named 'batch.eml'")
+                logger.warning("No batch.eml files found in ZIP archive")
                 
     except Exception as e:
         st.error(f"Error extracting ZIP file: {str(e)}")
