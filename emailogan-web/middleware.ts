@@ -13,6 +13,15 @@ export function middleware(request: NextRequest) {
     (varName) => !process.env[varName] || process.env[varName] === 'your_' + varName.toLowerCase() + '_here'
   );
 
+  // Log for debugging
+  console.log('Environment check:', {
+    path: request.nextUrl.pathname,
+    hasOpenAI: !!process.env.OPENAI_API_KEY,
+    hasPinecone: !!process.env.PINECONE_API_KEY,
+    hasJWT: !!process.env.JWT_SECRET,
+    missing: missingVars
+  });
+
   // If accessing API routes and missing env vars, return error
   if (request.nextUrl.pathname.startsWith('/api/') && missingVars.length > 0) {
     if (request.nextUrl.pathname === '/api/auth/login') {
@@ -23,8 +32,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.json(
       { 
         error: 'Server not configured', 
-        message: 'Missing required environment variables. Please configure the application.',
-        missing: missingVars 
+        message: `Missing required environment variables: ${missingVars.join(', ')}. Please configure in Vercel dashboard WITHOUT quotes.`,
+        missing: missingVars,
+        details: {
+          OPENAI_API_KEY: process.env.OPENAI_API_KEY ? 'Set' : 'Missing',
+          PINECONE_API_KEY: process.env.PINECONE_API_KEY ? 'Set' : 'Missing',
+          JWT_SECRET: process.env.JWT_SECRET ? 'Set' : 'Missing'
+        }
       },
       { status: 503 }
     );
