@@ -171,7 +171,7 @@ export default function FileUploader() {
                   {getProcessingMessage()}
                 </p>
                 {totalFiles > 0 && processingStage !== 'complete' && (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-700">
                     Processing {totalFiles} email{totalFiles !== 1 ? 's' : ''}
                   </p>
                 )}
@@ -219,7 +219,7 @@ export default function FileUploader() {
       >
         <input {...getInputProps()} disabled={processingStage !== 'idle' && processingStage !== 'complete'} />
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className="mx-auto h-12 w-12 text-gray-600"
           stroke="currentColor"
           fill="none"
           viewBox="0 0 48 48"
@@ -231,10 +231,10 @@ export default function FileUploader() {
             strokeLinejoin="round"
           />
         </svg>
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="mt-2 text-sm text-gray-700">
           Drop .eml or .zip files here, or click to select
         </p>
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-gray-600">
           Supports individual .eml files or ZIP archives containing .eml files
         </p>
       </div>

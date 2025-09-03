@@ -65,19 +65,19 @@ export default function KnowledgePage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-gray-50 p-4 rounded">
                   <div className="text-2xl font-bold text-gray-900">{emails.length}</div>
-                  <div className="text-sm text-gray-500">Total Emails</div>
+                  <div className="text-sm text-gray-700">Total Emails</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded">
                   <div className="text-2xl font-bold text-gray-900">
                     {emails.filter(e => e.embedding).length}
                   </div>
-                  <div className="text-sm text-gray-500">Processed</div>
+                  <div className="text-sm text-gray-700">Processed</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded">
                   <div className="text-2xl font-bold text-gray-900">
                     {emails.filter(e => !e.embedding).length}
                   </div>
-                  <div className="text-sm text-gray-500">Pending</div>
+                  <div className="text-sm text-gray-700">Pending</div>
                 </div>
               </div>
             </div>
@@ -85,11 +85,11 @@ export default function KnowledgePage() {
             {isLoading ? (
               <div className="text-center py-12">
                 <div className="inline-flex items-center">
-                  <svg className="animate-spin h-5 w-5 mr-3 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin h-5 w-5 mr-3 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  <span className="text-gray-500">Loading emails from knowledge base...</span>
+                  <span className="text-gray-700">Loading emails from knowledge base...</span>
                 </div>
               </div>
             ) : emails.length > 0 ? (
@@ -99,16 +99,16 @@ export default function KnowledgePage() {
                   <table className="min-w-full divide-y divide-gray-300">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                           Subject
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                           From
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                           To
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                           Status
                         </th>
                       </tr>
@@ -119,10 +119,10 @@ export default function KnowledgePage() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {email.subject}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                             {email.from}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                             {email.to}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -144,8 +144,8 @@ export default function KnowledgePage() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-gray-500">No emails in the knowledge base yet.</p>
-                <p className="text-sm text-gray-400 mt-2">
+                <p className="text-gray-700">No emails in the knowledge base yet.</p>
+                <p className="text-sm text-gray-600 mt-2">
                   Upload emails to get started.
                 </p>
               </div>
@@ -161,7 +161,7 @@ export default function KnowledgePage() {
             <h2 className="text-lg font-medium text-gray-900 mb-4">
               Clear Knowledge Base
             </h2>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-gray-700 mb-6">
               Are you sure you want to clear the entire knowledge base? This will permanently delete all {emails.length} stored emails and their embeddings. This action cannot be undone.
             </p>
             <div className="flex justify-end space-x-3">

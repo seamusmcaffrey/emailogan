@@ -34,26 +34,45 @@ body::before {
   background-position: top left;
   background-repeat: repeat; /* Enable tiling */
   background-attachment: fixed;
-  opacity: 0.08; /* Very subtle - increase to 0.15 for more visibility */
+  opacity: 0.35; /* Increased visibility for background pattern */
   z-index: -1;
   pointer-events: none;
 }
 
-/* Make main content areas slightly transparent */
+/* Make main content areas more transparent to show background */
 .min-h-screen {
   position: relative;
-  background-color: rgba(249, 250, 251, 0.97) !important; /* Slight transparency */
+  background-color: transparent !important;
 }
 
-/* Make white cards/panels slightly transparent */
+/* Make white cards/panels semi-transparent with backdrop blur */
 .bg-white {
-  background-color: rgba(255, 255, 255, 0.98) !important;
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* Override gray backgrounds to be transparent */
+.bg-gray-50 {
+  background-color: transparent !important;
+}
+
+/* Ensure high contrast for text on semi-transparent backgrounds */
+.text-gray-600 {
+  color: rgb(31, 41, 55) !important; /* Darker gray for better contrast */
+}
+
+.text-gray-700 {
+  color: rgb(17, 24, 39) !important; /* Even darker */
+}
+
+.text-gray-500 {
+  color: rgb(55, 65, 81) !important; /* Darker for readability */
 }
 
 /* Navigation bar with backdrop blur */
 nav {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(12px);
 }
 
 @layer utilities {
