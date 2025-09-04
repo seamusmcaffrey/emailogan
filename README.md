@@ -1,168 +1,408 @@
-# Email RAG Assistant
+# EmailOgan - AI-Powered Email Response Generation System
 
-A web-based email response generation system using RAG (Retrieval-Augmented Generation) technology. Upload your email history (.eml files) to create a personalized AI assistant that generates contextually appropriate responses based on your communication patterns.
+A dual-architecture email response generation system using RAG (Retrieval-Augmented Generation) technology. This system learns from your email history to generate contextually appropriate, personalized responses that match your writing style.
 
-## Features
+## 🚀 Quick Start
 
-- 📤 **Bulk Email Upload**: Process multiple .eml files at once
-- 🔍 **Vector Search**: Semantic search through email history using Pinecone
-- 🤖 **AI Response Generation**: GPT-4 powered responses matching your writing style
-- 📊 **Knowledge Base Management**: View and search your processed emails
-- 🎨 **Response Styles**: Choose between professional, friendly, brief, or detailed tones
-- 🔒 **Security**: Session management and input sanitization
-
-## Prerequisites
-
-- Python 3.8+
-- OpenAI API key
-- Pinecone API key (free tier available)
-
-## Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd emailogan
-```
-
-2. Install dependencies:
+### Option 1: Streamlit App (Python)
 ```bash
 pip install -r requirements.txt
+streamlit run app.py
 ```
 
-3. Set up API keys:
-   - Copy the secrets template:
-   ```bash
-   cp .streamlit/secrets.toml.example .streamlit/secrets.toml
-   ```
-   - Edit `.streamlit/secrets.toml` and add your API keys:
-   ```toml
-   OPENAI_API_KEY = "sk-..."
-   PINECONE_API_KEY = "your-pinecone-key"
-   ```
+### Option 2: Next.js App (TypeScript)
+```bash
+cd emailogan-web
+npm install
+npm run dev
+```
 
-## Getting API Keys
+## 🏗️ System Architecture
 
-### OpenAI API Key
-1. Go to [OpenAI Platform](https://platform.openai.com/)
+EmailOgan provides two complete implementations of the same RAG-based email response system:
+
+### 1. **Streamlit Application** (Python)
+A rapid deployment web application ideal for personal use and quick prototyping.
+
+### 2. **Next.js Application** (TypeScript/React)
+A production-ready full-stack application with advanced features and scalability.
+
+### Core Technology Stack
+- **AI Model**: OpenAI GPT-4 / GPT-3.5 Turbo
+- **Embeddings**: text-embedding-ada-002 (1536 dimensions)
+- **Vector Database**: Pinecone (serverless, AWS us-east-1)
+- **Authentication**: JWT (Next.js) / Session-based (Streamlit)
+
+## 📋 Features
+
+### Core Functionality
+- 📤 **Bulk Email Upload**: Process multiple .eml files simultaneously
+- 🔍 **Semantic Search**: Vector similarity search through email history
+- 🤖 **AI Response Generation**: Context-aware responses using RAG
+- 📊 **Knowledge Base Management**: View, search, and manage processed emails
+- 🎨 **Response Styles**: Multiple tone options (professional, friendly, brief, detailed)
+- 🔒 **Security**: Authentication, input validation, and secure session management
+
+### Advanced Features (Next.js)
+- 🔐 JWT-based authentication with secure middleware
+- 📱 Responsive design with modern UI components
+- ⚡ Optimized API routes with TypeScript type safety
+- 🎯 Zustand state management
+- 🚦 Comprehensive error handling and recovery
+
+## 🔧 Installation & Setup
+
+### Prerequisites
+- Python 3.8+ (for Streamlit)
+- Node.js 18+ (for Next.js)
+- OpenAI API key
+- Pinecone API key
+
+### Environment Configuration
+
+#### For Streamlit App
+Create `.streamlit/secrets.toml`:
+```toml
+OPENAI_API_KEY = "sk-..."
+PINECONE_API_KEY = "..."
+APP_PASSWORD = "..." # Optional password protection
+```
+
+#### For Next.js App
+Create `.env.local`:
+```bash
+OPENAI_API_KEY=sk-...
+PINECONE_API_KEY=...
+JWT_SECRET=your-secret-key
+```
+
+### Getting API Keys
+
+#### OpenAI API Key
+1. Visit [OpenAI Platform](https://platform.openai.com/)
 2. Sign up or log in
 3. Navigate to API keys section
 4. Create a new API key
 
-### Pinecone API Key
-1. Go to [Pinecone.io](https://www.pinecone.io/)
+#### Pinecone API Key
+1. Visit [Pinecone.io](https://www.pinecone.io/)
 2. Sign up for a free account
-3. Navigate to API Keys in the dashboard
-4. Copy your API key
+3. Navigate to API Keys in dashboard
+4. Create an index named `email-rag-index` with 1536 dimensions
 
-## Running Locally
+## 📁 Project Structure
 
-```bash
-streamlit run app.py
+```
+emailogan/
+├── Python/Streamlit Application
+│   ├── app.py                     # Main Streamlit application
+│   ├── email_processor.py         # Email parsing and extraction
+│   ├── vector_manager.py          # Pinecone vector operations
+│   ├── response_generator.py      # AI-powered response generation
+│   ├── style_learning.py          # Writing style analysis
+│   ├── security.py                # Security utilities
+│   ├── monitoring.py              # Logging and error handling
+│   ├── requirements.txt           # Python dependencies
+│   └── .streamlit/
+│       └── secrets.toml.example   # Secrets template
+│
+├── emailogan-web/                 # Next.js Application
+│   ├── app/
+│   │   ├── api/                   # API routes
+│   │   │   ├── auth/             # Authentication endpoints
+│   │   │   ├── emails/           # Email processing
+│   │   │   ├── vectors/          # Vector operations
+│   │   │   └── generate/         # Response generation
+│   │   ├── page.tsx              # Main application page
+│   │   └── layout.tsx            # Root layout
+│   ├── components/                # React components
+│   │   ├── email-upload.tsx     # File upload interface
+│   │   ├── response-generator.tsx # Response generation UI
+│   │   └── knowledge-base.tsx   # Email management UI
+│   ├── lib/                      # Core utilities
+│   │   ├── auth.ts              # JWT authentication
+│   │   ├── email-parser.ts      # Email parsing logic
+│   │   ├── pinecone.ts          # Vector database client
+│   │   └── openai.ts            # OpenAI integration
+│   ├── store/                    # Zustand state management
+│   └── package.json              # Node dependencies
+│
+├── Testing & Documentation
+│   ├── test_app.py               # Python unit tests
+│   ├── test_parser.py            # Email parser tests
+│   ├── test_style_learning.py    # Style learning tests
+│   ├── test-email-generation.js  # JavaScript tests
+│   ├── README.md                 # This file
+│   └── CLAUDE.md                 # AI assistant guidelines
+│
+└── Deployment Configurations
+    ├── vercel.json               # Vercel deployment
+    └── render.yaml               # Render deployment
 ```
 
-The application will open in your browser at `http://localhost:8501`
+## 🔄 Data Flow & Processing Pipeline
 
-## Usage
+```
+1. Email Upload (.eml files)
+   ↓
+2. Parse & Extract
+   - Headers (from, to, subject, date)
+   - Body content (plain text/HTML)
+   - Metadata extraction
+   ↓
+3. Generate Embeddings
+   - OpenAI text-embedding-ada-002
+   - 1536-dimensional vectors
+   - Truncate to 8000 chars if needed
+   ↓
+4. Store in Pinecone
+   - Batch processing (100 vectors)
+   - Metadata preservation
+   - Deduplication check
+   ↓
+5. Query Similar Emails
+   - Semantic similarity search
+   - Retrieve top 15 matches
+   - Context aggregation
+   ↓
+6. Generate Response
+   - RAG-based generation
+   - Style-aware output
+   - Multi-style options
+```
 
-### 1. Upload Emails
-- Navigate to "Upload & Process" mode
-- Select multiple .eml files from your computer
-- Click "Process Files" to parse the emails
-- Click "Create Vector Database" to generate embeddings
+## 🛠️ Development Commands
 
-### 2. Generate Responses
-- Switch to "Generate Response" mode
-- Enter the sender's email address
-- Paste the incoming email content
-- Select your preferred response style
-- Click "Generate Response"
-- Edit the generated response if needed
+### Streamlit Application
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-### 3. Manage Knowledge Base
-- View all processed emails in "View Knowledge Base" mode
-- Search through your email history
-- Monitor statistics about your email database
-- Clear the knowledge base when needed
+# Run development server
+streamlit run app.py
 
-## Deployment Options
+# Run tests
+python test_app.py
+python test_parser.py
+python test_style_learning.py
+```
 
-### Hugging Face Spaces (Free)
-1. Create a new Space at [huggingface.co/new-space](https://huggingface.co/new-space)
-2. Choose Streamlit as the SDK
-3. Push your code to the Space
-4. Add secrets in the Space settings
+### Next.js Application
+```bash
+cd emailogan-web
+
+# Install dependencies
+npm install
+
+# Development server
+npm run dev
+
+# Production build
+npm run build
+npm run start
+
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
+```
+
+## 🚀 Deployment
+
+### Vercel (Next.js)
+1. Connect GitHub repository to Vercel
+2. Set environment variables in dashboard
+3. Deploy with automatic builds
 
 ### Streamlit Community Cloud
 1. Push code to GitHub
 2. Connect to [share.streamlit.io](https://share.streamlit.io)
-3. Deploy from your repository
-4. Add secrets in the app settings
+3. Configure secrets in app settings
 
-### Render.com
-1. Create a new Web Service
-2. Connect your GitHub repository
-3. Set build command: `pip install -r requirements.txt`
-4. Set start command: `streamlit run app.py`
-5. Add environment variables for API keys
+### Render
+1. Create new Web Service
+2. Connect GitHub repository
+3. Configure build and start commands
+4. Set environment variables
 
-## Project Structure
+### Hugging Face Spaces
+1. Create new Space with Streamlit SDK
+2. Push code to Space
+3. Configure secrets in settings
 
+## 📊 API Endpoints (Next.js)
+
+### Authentication
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/verify` - Verify JWT token
+
+### Email Processing
+- `POST /api/emails/process` - Parse and process .eml files
+- `GET /api/emails/search` - Search processed emails
+
+### Vector Operations
+- `POST /api/vectors/store` - Store email vectors
+- `POST /api/vectors/search` - Semantic similarity search
+- `DELETE /api/vectors/clear` - Clear vector database
+
+### Response Generation
+- `POST /api/generate/response` - Generate AI response
+- `POST /api/generate/style-analysis` - Analyze writing style
+
+## ⚡ Performance Optimization
+
+### Batch Processing
+- Vectors processed in batches of 100
+- Parallel email parsing for bulk uploads
+- Chunked file reading for large attachments
+
+### Caching Strategy
+- Session-based cache for frequent queries
+- Vector similarity results cached for 5 minutes
+- Style analysis cached per sender
+
+### Rate Limiting
+- OpenAI API: 3 requests per second
+- Pinecone: 100 upserts per batch
+- Response generation: 60-second timeout
+
+## 🔒 Security Features
+
+### Authentication & Authorization
+- JWT tokens with expiration (Next.js)
+- Session-based auth with timeout (Streamlit)
+- Password hashing (SHA256/bcrypt)
+
+### Input Validation
+- Email address validation
+- File type verification (.eml only)
+- Content length limits (8000 chars for embeddings)
+- XSS protection on all inputs
+
+### Data Protection
+- Environment variables for sensitive data
+- No storage of raw API keys
+- Secure cookie handling (httpOnly, sameSite)
+- HTTPS enforcement in production
+
+## 🧪 Testing
+
+### Unit Tests
+```bash
+# Python tests
+python test_app.py        # Application logic
+python test_parser.py     # Email parsing
+python test_style_learning.py  # Style analysis
+
+# JavaScript tests
+node test-email-generation.js  # Email generation
 ```
-emailogan/
-├── app.py                 # Main Streamlit application
-├── email_processor.py     # Email parsing and processing
-├── vector_manager.py      # Pinecone vector database management
-├── response_generator.py  # AI response generation
-├── security.py           # Security utilities
-├── monitoring.py         # Error handling and logging
-├── requirements.txt      # Python dependencies
-├── .streamlit/
-│   └── secrets.toml.example  # API keys template
-└── README.md            # Documentation
-```
 
-## Troubleshooting
+### Integration Testing
+- API endpoint testing with Postman/Insomnia
+- Vector database operations verification
+- End-to-end user flow testing
+
+## 💰 Cost Estimates
+
+### OpenAI API
+- Embeddings: ~$0.0001 per 1K tokens
+- GPT-4: ~$0.03 per 1K tokens
+- Estimated: $20-30/month moderate usage
+
+### Pinecone
+- Free tier: 100K vectors, 1 index
+- Starter: $70/month for 5M vectors
+- Standard: $335/month for 50M vectors
+
+### Hosting
+- Vercel: Free tier available
+- Streamlit Cloud: Free tier available
+- Render: $7/month for web service
+
+## 🐛 Troubleshooting
 
 ### Common Issues
 
-1. **"Failed to initialize Pinecone"**
-   - Verify your Pinecone API key is correct
-   - Check if you're within Pinecone's free tier limits
+#### "Failed to initialize Pinecone"
+- Verify API key is correct
+- Ensure index `email-rag-index` exists
+- Check dimension count is 1536
 
-2. **"OpenAI API error"**
-   - Ensure your OpenAI API key is valid
-   - Check if you have credits in your OpenAI account
+#### "OpenAI API error"
+- Validate API key
+- Check account credits
+- Verify rate limits
 
-3. **"No module named..."**
-   - Run `pip install -r requirements.txt` again
-   - Consider using a virtual environment
+#### "Email parsing failed"
+- Ensure .eml file format
+- Check for corrupted files
+- Verify character encoding
 
-4. **Large email files taking too long**
-   - Process emails in smaller batches
-   - Consider upgrading to paid tiers for better performance
+#### "JWT verification failed"
+- Check JWT_SECRET is set
+- Verify token expiration
+- Clear browser cookies
 
-## Security Considerations
+### Debug Mode
+```bash
+# Streamlit
+streamlit run app.py --logger.level=debug
 
-- Never commit your `secrets.toml` file
-- API keys are stored locally and never transmitted
-- Session timeout after 1 hour of inactivity
-- Input sanitization for all user inputs
+# Next.js
+DEBUG=* npm run dev
+```
 
-## Cost Estimates
+## 🤝 Contributing
 
-- **OpenAI API**: ~$20-30/month for moderate usage
-- **Pinecone**: Free tier (up to 100K vectors) or $70/month for starter
-- **Hosting**: Free on Hugging Face Spaces or Streamlit Cloud
+We welcome contributions! Please follow these steps:
 
-## Contributing
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Contributions are welcome! Please feel free to submit pull requests or open issues.
+### Development Guidelines
+- Follow existing code style
+- Add tests for new features
+- Update documentation
+- Ensure all tests pass
 
-## License
+## 📄 License
 
-MIT License - See LICENSE file for details
+MIT License - see LICENSE file for details
 
-## Support
+## 🆘 Support
 
-For issues or questions, please open an issue on GitHub.
+- **Issues**: Open an issue on GitHub
+- **Discussions**: Join our Discord server
+- **Email**: support@emailogan.com
+
+## 🔮 Roadmap
+
+### Version 2.0
+- [ ] Multi-language support
+- [ ] Advanced style learning with fine-tuning
+- [ ] Email template library
+- [ ] Batch response generation
+
+### Version 3.0
+- [ ] Mobile applications (iOS/Android)
+- [ ] Browser extensions
+- [ ] Team collaboration features
+- [ ] Custom AI model training
+
+## 🙏 Acknowledgments
+
+- OpenAI for GPT models and embeddings
+- Pinecone for vector database infrastructure
+- Streamlit and Next.js communities
+- All contributors and users
+
+---
+
+**EmailOgan** - Transform your email communication with AI
+*Built with ❤️ for better email experiences*
